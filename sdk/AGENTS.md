@@ -18,7 +18,7 @@ Client library、共享 contracts、schema 输入和 SDK 文档；不要引入 S
 - SDK 不依赖 Server 内部 module、SOEM、SocketCAN、vendor SDK 或具体 backend。
 - schema 输入不等于 DTO code generation、drift gate 或实际 schema negotiation。不得把
   YAML、hash 或设计目标当成已实现运行期能力。
-- 示例默认无硬件、只读或 dry-run；任何真实动作、maintenance、clear fault 或
+- 示例默认无硬件或只读；需要 mock/dry-run 时应说明由谁提供，本仓无内置实现。任何真实动作、maintenance、clear fault 或
   emergency stop 示例都必须明确前置条件和安全后果。
 - 文档必须区分 gate receipt、backend execution、completion、stop confirmation 和
   物理安全；`Accepted` 只表示请求被 Server gate 接纳。

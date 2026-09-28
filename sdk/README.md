@@ -8,29 +8,11 @@
 
 当前公开 API 为 `ControlClient::connect`、`send_motion`、`heartbeat`、`stop` 和 `reset_eha_fault`：
 
-```rust
-use std::path::PathBuf;
-
-use ranger_client::{ClientConfig, ControlClient, VehicleMotionCommand};
-
-let mut client = ControlClient::connect(ClientConfig {
-    socket_path: PathBuf::from("/run/ranger/server.sock"),
-    max_frame_bytes: 65_536,
-})?;
-let receipt = client.send_motion(
-    "yard-low-speed.v1",
-    VehicleMotionCommand {
-        linear_velocity_mps: 0.8,
-        yaw_rate_radps: 0.15,
-    },
-)?;
-println!("{}: {:?}", receipt.receipt_id, receipt.status);
-# Ok::<(), ranger_client::ClientError>(())
-```
+使用示例与执行前置条件见[根 README](../README.md#当前可用接口)。
 
 `contracts` 含有 `Resource::VehicleSuspension`，但该 Client 还没有 `send_suspension` 方法，因此 suspension 不能列为当前 Rust SDK 的公开能力。
 
-`Accepted` 只表示 Server gate 接受 request，不表示 backend executed、动作完成、stop confirmation 或车辆物理安全。调用方应读取 Server execution status 与 diagnostics；SDK 不自动重连、重发 mutating request 或恢复旧 motion。
+`Accepted` 只表示 Server gate 接受 request，不表示 backend executed、动作完成、stop confirmation 或车辆物理安全。本 Client 不提供 execution-status 或 diagnostics 查询 API；这些证据须由部署环境的独立 Server 诊断/操作通道取得，不能由 gate receipt 推断。SDK 不自动重连、重发 mutating request 或恢复旧 motion。
 
 当前 `ConnectRequest.schemas` 发送空集合。schema identity、YAML 输入和本地 DTO 都不能说明 runtime schema negotiation 已实现；Server 尚未提供该能力。完整 `ModeRequest`、统一 resource claim、整车 stop confirmation 也仍未实现。
 

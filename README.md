@@ -15,13 +15,15 @@
 `Resource::VehicleSuspension`，但 Rust Client 还没有 `send_suspension` 方法；
 不得把 DTO 枚举当成已交付的 suspension SDK API。
 
+下列片段是 API 调用示意，不是可直接运行的程序。演练前须由调用方自行提供监听指定 socket 的无硬件 mock Server；本仓未提供该程序或内置 dry-run。参数仅是测试 fixture，不是部署默认值。`send_motion` 会提交运动请求，不得将该片段直接指向真实车辆端点；实际控制须先满足对应 Server profile 和操作前置条件。
+
 ```rust
 use std::path::PathBuf;
 
 use ranger_client::{ClientConfig, ControlClient, VehicleMotionCommand};
 
 let mut client = ControlClient::connect(ClientConfig {
-    socket_path: PathBuf::from("/run/ranger/server.sock"),
+    socket_path: PathBuf::from("/tmp/ranger-sdk-mock.sock"),
     max_frame_bytes: 65_536,
 })?;
 let receipt = client.send_motion(
@@ -37,7 +39,7 @@ println!("{}: {:?}", receipt.receipt_id, receipt.status);
 
 Client 只通过 Ranger Server API 请求 control session、motion、stop 和 EHA 域故障复位；它不会打开 CAN、EtherCAT、S.Bus、MAVLink 或任何 backend。`contracts` 保留 diagnostics DTO，但当前 Rust Client 尚未提供 ReadOnly/diagnostics client。当前 `ConnectRequest.schemas` 发送空集合，Server 尚未实现 schema negotiation；schema 文件与 `SchemaId` 的存在不能说明运行时已协商兼容。
 
-`GateReceipt::Accepted` 仅表示 Server gate 接受请求。它不表示 backend 已执行、停止已被 backend 确认，或车辆已处于物理安全状态。调用方必须依据 Server 返回的执行状态和 diagnostics 判断结果；SDK 不自动重连、重发 mutating request 或恢复运动。
+`GateReceipt::Accepted` 仅表示 Server gate 接受请求。它不表示 backend 已执行、停止已被 backend 确认，或车辆已处于物理安全状态。当前 Client 只返回 gate receipt，没有 execution-status 或 diagnostics 查询 API；动作结果及停止证据须由部署环境的独立 Server 诊断/操作通道取得，不能由本 SDK receipt 推断。SDK 不自动重连、重发 mutating request 或恢复运动。
 
 当前接口尚未实现完整车辆级 `ModeRequest`、统一 resource claim、整车 stop confirmation 或 schema negotiation。这些能力不能由 SDK 文档或 schema 文件替代。
 
