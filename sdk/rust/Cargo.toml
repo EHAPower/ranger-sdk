@@ -1,0 +1,13 @@
+[package]
+name = "ranger-client"
+description = "Ranger Server 的同步 Linux SOCK_SEQPACKET Client SDK"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+contracts = { workspace = true }
+nix = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+serde = { workspace = true }
