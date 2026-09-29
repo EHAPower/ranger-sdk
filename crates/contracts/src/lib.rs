@@ -1,4 +1,4 @@
-//! Ranger SDK / Server 共享 DTO、transport envelope 和 schema 协商类型。
+//! Ranger Vehicle SDK / Runtime 共享 DTO、transport envelope 和 schema 协商类型。
 //!
 //! 本 crate 是纯数据层，不依赖 `daemon`、`hal`、`control` 或具体 backend。
 //! DTO 来源：

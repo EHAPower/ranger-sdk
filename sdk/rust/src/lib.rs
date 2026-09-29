@@ -1,4 +1,4 @@
-//! Ranger Server 的最小同步 Rust Client SDK。
+//! Ranger Vehicle Runtime 的最小同步 Rust Client SDK。
 //!
 //! 本 crate 只封装 Linux Unix domain `SOCK_SEQPACKET` transport、control session
 //! 和车辆级 motion/stop 请求，不包含硬件访问、安全策略或自动重连。
@@ -119,7 +119,7 @@ pub struct ControlClient {
 }
 
 impl ControlClient {
-    /// 连接 Ranger Server，完成 bootstrap 和 Control session handshake。
+    /// 连接 Ranger Vehicle Runtime，完成 bootstrap 和 Control session handshake。
     pub fn connect(config: ClientConfig) -> Result<Self> {
         validate_config(&config)?;
         let stream = socket(

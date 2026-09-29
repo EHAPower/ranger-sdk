@@ -5,6 +5,7 @@ members = ["crates/contracts", "sdk/rust"]
 [workspace.package]
 edition = "2024"
 version = "0.1.0"
+repository = "https://github.com/EHAPower/ranger-vehicle-sdk"
 
 [workspace.dependencies]
 contracts = { path = "crates/contracts" }

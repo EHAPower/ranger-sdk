@@ -1,6 +1,7 @@
 [package]
 name = "ranger-client"
-description = "Ranger Server 的同步 Linux SOCK_SEQPACKET Client SDK"
+repository.workspace = true
+description = "Ranger Vehicle Runtime 的同步 Linux SOCK_SEQPACKET Client SDK"
 version.workspace = true
 edition.workspace = true
 

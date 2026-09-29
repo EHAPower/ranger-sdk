@@ -6,14 +6,15 @@ Client library、共享 contracts、schema 输入和 SDK 文档；不要引入 S
 
 ## 迁移状态
 
-本仓是从 `ranger-server` 提取的候选快照。Ranger-Go 和当前 Server 仍使用其同源
-`contracts` / schema；消费者尚未切换前，本目录不是已完成迁移后的唯一协议 owner。
+本仓是从 `ranger-vehicle-runtime`（原 `ranger-server`）提取的候选快照。
+`ranger-vehicle-apps` 和当前 Runtime 仍使用其同源 `contracts` / schema；消费者尚未
+切换前，本目录不是已完成迁移后的唯一协议 owner。
 不得在两处独立修改 DTO、schema、wire bytes 或兼容规则。变更必须先确定 owner、
 固定版本、消费者顺序与验证证据。
 
 ## SDK 边界
 
-- SDK 只能调用 Ranger Server API 或协议，不直接打开 CAN、EtherCAT、S.Bus、MAVLink、
+- SDK 只能调用 `ranger-vehicle-runtime` API 或协议，不直接打开 CAN、EtherCAT、S.Bus、MAVLink、
   Livox、wheel driver、EHA backend 或其他硬件资源。
 - SDK 不依赖 Server 内部 module、SOEM、SocketCAN、vendor SDK 或具体 backend。
 - schema 输入不等于 DTO code generation、drift gate 或实际 schema negotiation。不得把

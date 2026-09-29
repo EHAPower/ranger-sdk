@@ -1,8 +1,12 @@
-# Ranger SDK
+# Ranger Vehicle SDK
 
-`ranger-sdk` 是 Ranger 的客户端接口仓库。当前内容从 `ranger-server` 的 `a691ce1a999314eae5634876786de182915509cb` 提取，包含 Rust Client、共享 `contracts` 和机器可读 schema 输入。它不包含 Ranger Server、硬件 backend、控制算法或部署配置。
+**当前阶段：架构设计。** 仓库名称与职责作为设计基线；更名不表示目标能力、接口迁移或产品发行已完成。目标接口允许重设，不承担旧版本兼容承诺；当前行为仍以源码和实际验证为准。
 
-这是一次接口提取的发布候选快照，尚不是协议 owner 已迁移完成的证明。迁移期间，`ranger-server` 中的 `crates/contracts` 仍是当前生产消费者使用的来源；在 Ranger-Go、Server 和发布流程切换到此仓固定版本前，不得在两个位置独立演进 DTO、schema 或 wire bytes。任何协议改动必须先确定唯一 owner、迁移顺序、兼容策略和验证组合。
+规范仓库地址：[EHAPower/ranger-vehicle-sdk](https://github.com/EHAPower/ranger-vehicle-sdk)。克隆目录为 `ranger-vehicle-sdk`。crate 名、socket 路径和 wire 合同不因仓库更名改变。
+
+`ranger-vehicle-sdk` 是 Ranger 的客户端接口仓库，也是无常驻进程的库仓。当前内容从 `ranger-vehicle-runtime`（原 `ranger-server`）的 `a691ce1a999314eae5634876786de182915509cb` 提取，包含 Rust Client、共享 `contracts` 和机器可读 schema 输入。它不包含 Runtime 实现、硬件 backend、控制算法或部署配置。
+
+这是一次接口提取的发布候选快照，尚不是协议 owner 已迁移完成的证明。迁移期间，`ranger-vehicle-runtime`（原 `ranger-server`）中的 `crates/contracts` 仍是当前生产消费者使用的来源；在 `ranger-vehicle-apps`、Runtime 和发布流程切换到此仓固定版本前，不得在两个位置独立演进 DTO、schema 或 wire bytes。任何协议改动必须先确定唯一 owner、迁移顺序、兼容策略和验证组合。
 
 ## 当前可用接口
 
@@ -37,7 +41,7 @@ println!("{}: {:?}", receipt.receipt_id, receipt.status);
 # Ok::<(), ranger_client::ClientError>(())
 ```
 
-Client 只通过 Ranger Server API 请求 control session、motion、stop 和 EHA 域故障复位；它不会打开 CAN、EtherCAT、S.Bus、MAVLink 或任何 backend。`contracts` 保留 diagnostics DTO，但当前 Rust Client 尚未提供 ReadOnly/diagnostics client。当前 `ConnectRequest.schemas` 发送空集合，Server 尚未实现 schema negotiation；schema 文件与 `SchemaId` 的存在不能说明运行时已协商兼容。
+Client 只通过 `ranger-vehicle-runtime` API 请求 control session、motion、stop 和 EHA 域故障复位；它不会打开 CAN、EtherCAT、S.Bus、MAVLink 或任何 backend。`contracts` 保留 diagnostics DTO，但当前 Rust Client 尚未提供 ReadOnly/diagnostics client。当前 `ConnectRequest.schemas` 发送空集合，Runtime 尚未实现 schema negotiation；schema 文件与 `SchemaId` 的存在不能说明运行时已协商兼容。
 
 `GateReceipt::Accepted` 仅表示 Server gate 接受请求。它不表示 backend 已执行、停止已被 backend 确认，或车辆已处于物理安全状态。当前 Client 只返回 gate receipt，没有 execution-status 或 diagnostics 查询 API；动作结果及停止证据须由部署环境的独立 Server 诊断/操作通道取得，不能由本 SDK receipt 推断。SDK 不自动重连、重发 mutating request 或恢复运动。
 
@@ -68,4 +72,4 @@ cargo build --locked --release
 
 ## 迁移边界
 
-此仓添加到 `ranger` 集成仓只固定一次接口候选版本，不会自动让现有 path dependency 切换。下一步应先让 Ranger-Go 改为固定的 `ranger-sdk` 依赖并验证 wire 兼容，再让 `ranger-server` 消费同一版本，最后删除其重复来源。迁移完成前，Server 和 Go 的实际发布组合仍须以各自仓库的锁定 revision 为准。
+此仓添加到 `ranger` 集成仓只固定一次接口候选版本，不会自动让现有 path dependency 切换。下一步应先让 `ranger-vehicle-apps` 改为固定的 `ranger-vehicle-sdk` 依赖并验证 wire 兼容，再让 `ranger-vehicle-runtime` 消费同一版本，最后删除其重复来源。迁移完成前，Runtime 和 Apps 的实际发布组合仍须以各自仓库的锁定 revision 为准。
